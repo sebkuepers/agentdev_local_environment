@@ -1,0 +1,69 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+.venv/
+env/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Logs
+*.log
+logs/
+ray_results/
+
+# Environment variables
+.env
+.env.local
+.env.*
+
+# Data directory
+data/
+langfuse-local/
+
+# Visual Studio Code
+.vscode/
+*.code-workspace
+.history/
+
+# OS specific files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Ray specific
+ray_bootstrap_config.yaml
+ray_bootstrap_key.pem
+runtime_resources*
+
+# Model files (large binary files)
+*.gguf
+*.ggml
+*.bin
+*.pt
+*.pth
+*.safetensors
+
+# Node.js
+node_modules/
+npm-debug.log
+yarn-debug.log
+yarn-error.log

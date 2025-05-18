@@ -1,0 +1,26 @@
+# ray_cluster.yaml - Optimized for MacBook Pro M4 Max with 48GB RAM
+cluster_name: macbook-m4-max
+
+provider:
+  type: local
+  head_ip: 127.0.0.1
+
+head_node:
+  resources:
+    CPU: 12  # Allocating 12 of your CPU cores
+    GPU: 1   # Standard GPU resource designation
+    memory: 30000  # 30GB RAM (leaving ~18GB for system)
+
+# No worker nodes defined since this is a single-machine cluster
+# If you want to add a worker process on the same machine:
+worker_nodes:
+  instance_type: local
+  resources:
+    CPU: 2
+    memory: 4000  # 4GB
+
+# Runtime environment configuration
+runtime_env:
+  env_vars:
+    # Environment variables to help with Apple Silicon optimization
+    PYTORCH_ENABLE_MPS_FALLBACK: 1

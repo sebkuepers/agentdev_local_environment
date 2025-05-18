@@ -1,0 +1,1 @@
+"""Knowledge graph components for Neo4j integration."""

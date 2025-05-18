@@ -1,0 +1,53 @@
+# Core distributed computing
+ray[serve,tune,rllib]>=2.9.0
+pydantic>=2.5.0
+
+# LLM and inference 
+langchain>=0.1.0
+langchain-community>=0.0.10
+langchain-core>=0.1.10
+llama-cpp-python>=0.2.19
+transformers>=4.36.0
+accelerate>=0.25.0
+sentencepiece>=0.1.99
+protobuf>=4.24.4
+tokenizers>=0.15.0
+
+# LangGraph for agent workflows
+langgraph>=0.0.19
+
+# CrewAI for multi-agent systems
+crewai>=0.19.0
+
+# Graph RAG components
+neo4j>=5.13.0
+sentence-transformers>=2.3.0
+beautifulsoup4>=4.12.2
+feedparser>=6.0.10
+newspaper3k>=0.2.8
+lxml>=4.9.3
+html2text>=2020.1.16
+
+# Observability and logging
+langfuse>=2.0.0
+opentelemetry-api>=1.20.0
+opentelemetry-sdk>=1.20.0
+wandb>=0.16.0
+
+# API development
+fastapi>=0.104.1
+uvicorn[standard]>=0.24.0
+pydantic-settings>=2.1.0
+
+# Utilities
+python-dotenv>=1.0.0
+pyyaml>=6.0.1
+rich>=13.6.0
+typer>=0.9.0
+pandas>=2.1.1
+numpy>=1.26.1
+pytest>=7.4.3
+httpx>=0.25.1
+jupyter>=1.0.0
+tqdm>=4.66.1
+schedule>=1.2.0
