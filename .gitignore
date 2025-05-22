@@ -30,6 +30,7 @@ ray_results/
 .env
 .env.local
 .env.*
+!.env.example
 
 # Data directory
 data/
