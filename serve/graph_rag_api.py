@@ -44,6 +44,8 @@ VERBOSE = os.getenv("VERBOSE", "true").lower() == "true"
 DEFAULT_MODEL_NAME = os.getenv("DEFAULT_MODEL_NAME", "local-mistral-7b")
 EMBEDDING_MODEL_NAME = os.getenv("EMBEDDING_MODEL_NAME", "BAAI/bge-small-en-v1.5")
 USE_RAG = os.getenv("USE_RAG", "true").lower() == "true"
+USE_GRAPH_ENHANCED = os.getenv("USE_GRAPH_ENHANCED", "true").lower() == "true"
+RAG_RESULTS_LIMIT = int(os.getenv("RAG_RESULTS_LIMIT", "3"))
 
 # Create a token collector for streaming
 class SimpleTokenCollector(BaseCallbackHandler):
@@ -119,8 +121,18 @@ class GraphRAGAPI:
             logger.error(f"Error generating embedding: {e}")
             return None
     
-    async def retrieve_context(self, query: str, limit: int = 3) -> str:
-        """Retrieve context from knowledge graph."""
+    async def retrieve_context(self, query: str, limit: int = 3, use_graph_enhanced: bool = True) -> str:
+        """
+        Retrieve context from knowledge graph, optionally using graph-enhanced search.
+        
+        Args:
+            query: The user's query
+            limit: Maximum number of results to return
+            use_graph_enhanced: Whether to use graph-enhanced retrieval (uses entity relationships)
+            
+        Returns:
+            Formatted context string
+        """
         if self.kg_search is None:
             return ""
             
@@ -131,13 +143,20 @@ class GraphRAGAPI:
             if embedding is None:
                 return ""
             
-            # Perform hybrid search
-            results = await ray.get(self.kg_search.hybrid_search.remote(
-                query=query,
-                embedding=embedding,
-                limit=limit,
-                vector_weight=0.7
-            ))
+            # Perform search - use graph-enhanced if specified, else hybrid
+            if use_graph_enhanced:
+                results = await ray.get(self.kg_search.graph_enhanced_search.remote(
+                    query=query,
+                    embedding=embedding,
+                    limit=limit
+                ))
+            else:
+                results = await ray.get(self.kg_search.hybrid_search.remote(
+                    query=query,
+                    embedding=embedding,
+                    limit=limit,
+                    vector_weight=0.7
+                ))
             
             if not results:
                 return ""
@@ -151,7 +170,35 @@ class GraphRAGAPI:
                 
                 # Format the chunk with metadata
                 chunk_text = f"[{i+1}] From article '{article_title}' ({source_info}):\n{chunk['content']}\n"
+                
+                # Add entity context if available
+                if "entity_context" in chunk and chunk["entity_context"]:
+                    chunk_text += f"Additional context: {chunk['entity_context']}\n"
+                
                 context_parts.append(chunk_text)
+            
+            # Get entity information for the top entities in the query
+            try:
+                entity_info = await ray.get(self.kg_search.get_entity_information.remote(query.split()[0]))
+                if entity_info and entity_info.get("name"):
+                    # Format entity information
+                    entity_text = f"\nRelevant entity information:\n"
+                    entity_text += f"Name: {entity_info.get('name')}\n"
+                    entity_text += f"Type: {entity_info.get('type')}\n"
+                    
+                    if entity_info.get("description"):
+                        entity_text += f"Description: {entity_info.get('description')}\n"
+                    
+                    # Add relationships
+                    if entity_info.get("relationships"):
+                        entity_text += "Relationships:\n"
+                        for rel in entity_info.get("relationships")[:3]:  # Limit to 3 relations
+                            entity_text += f"- {rel.get('entity')} ({rel.get('relation_type')})\n"
+                    
+                    context_parts.append(entity_text)
+            except Exception as e:
+                # Silently handle entity lookup failures
+                logger.warning(f"Entity info retrieval failed: {e}")
                 
             return "\n".join(context_parts)
             
@@ -194,7 +241,11 @@ class GraphRAGAPI:
         # Retrieve context if RAG is enabled and we have a user message
         context = ""
         if USE_RAG and last_user_message:
-            context = await self.retrieve_context(last_user_message)
+            context = await self.retrieve_context(
+                query=last_user_message,
+                limit=RAG_RESULTS_LIMIT,
+                use_graph_enhanced=USE_GRAPH_ENHANCED
+            )
             logger.info(f"Retrieved context: {len(context)} chars")
         
         # Build the prompt with system message and context

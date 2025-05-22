@@ -21,6 +21,7 @@ crewai>=0.19.0
 
 # Graph RAG components
 neo4j>=5.13.0
+neo4j-graphrag>=0.1.0
 sentence-transformers>=2.3.0
 beautifulsoup4>=4.12.2
 feedparser>=6.0.10
