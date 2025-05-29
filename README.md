@@ -1,10 +1,10 @@
 # Ray LLM Development Template
 
-A comprehensive starter template for developing AI agents with local LLMs using Ray, LangChain, LangGraph, CrewAI, and Langfuse.
+A comprehensive starter template for developing AI agents with local LLMs using Ray, LangChain, LangGraph, CrewAI, and Langfuse. Get up and running quickly with everything you need for local AI development!
 
 ## Overview
 
-This template provides everything you need to set up a local development environment for building and deploying AI agents using your own local models. It includes:
+This template provides everything you need to set up a local development environment for building and deploying AI agents using your own local models. Perfect for developers who want full control over their AI stack! It includes:
 
 - **Ray Distributed Computing**: Run models efficiently on your local machine
 - **OpenAI-Compatible API**: Use standard OpenAI clients with your local models
@@ -21,8 +21,8 @@ Clone this repository and run the setup script:
 
 ```bash
 # Clone the repository
-git clone https://github.com/username/ray-llm-template.git
-cd ray-llm-template
+git clone https://github.com/sebkuepers/agentdev_local_environment.git
+cd agentdev_local_environment
 
 # Initialize environment configuration
 just init-env
@@ -33,7 +33,7 @@ just setup
 
 ### 2. Download a Model
 
-Download a model to use with the system:
+Download a local model to get started:
 
 ```bash
 just download-model
@@ -55,6 +55,8 @@ just start-bg
 
 ### 4. Access Services
 
+Once everything is running, you can access these services:
+
 - **Chat Interface**: http://localhost:3000 (OpenWebUI)
 - **Ray Dashboard**: http://localhost:8265
 - **Neo4j Browser**: http://localhost:7474
@@ -63,7 +65,7 @@ just start-bg
 
 ## Configuration
 
-The template uses a `.env` file for all configuration. When you run `just init-env`, a default configuration is created from `.env.example`. You can edit this file to customize:
+The template uses a `.env` file for all configuration. When you run `just init-env`, a default configuration is created from [`.env.example`](.env.example). You can edit this file to customize:
 
 - **Model settings**: Path, temperature, context size, etc.
 - **Ray cluster settings**: CPU, GPU, and memory allocation
@@ -74,7 +76,7 @@ The template uses a `.env` file for all configuration. When you run `just init-e
 
 Key configuration options:
 
-```
+```env
 # Model Settings
 MODEL_DIR=~/ray-models
 DEFAULT_MODEL=mistral-7b-instruct/mistral-7b-instruct-v0.2.Q4_K_M.gguf
@@ -211,16 +213,16 @@ just run-graph-rag
 
 ## Directory Structure
 
-```
-ray-llm-template/
+```text
+agentdev_local_environment/
 ├── .venv/                     # Created by setup.sh
 ├── config/                    # Configuration files
 │   └── ray_cluster.yaml       # Ray cluster configuration
-├── examples/                  # Example agent implementations
-│   ├── langchain/             # LangChain examples
-│   ├── langgraph/             # LangGraph examples
-│   ├── crewai/                # CrewAI examples
-│   └── graph_rag/             # Graph RAG examples
+├── [examples/](examples/)                  # Example agent implementations
+│   ├── [langchain/](examples/langchain/)             # LangChain examples
+│   ├── [langgraph/](examples/langgraph/)             # LangGraph examples
+│   ├── [crewai/](examples/crewai/)                # CrewAI examples
+│   └── [graph_rag/](examples/graph_rag/)             # Graph RAG examples
 ├── pipeline/                  # Data pipeline components
 │   ├── crawlers/              # Web crawlers
 │   ├── processors/            # Text processing
@@ -228,19 +230,19 @@ ray-llm-template/
 │   └── graph/                 # Knowledge graph operations
 ├── langfuse-local/            # Langfuse Docker config
 ├── scripts/                   # Helper scripts
-│   ├── download_model.sh      # Model downloader
-│   └── setup.sh               # Setup script
+│   ├── [download_model.sh](scripts/download_model.sh)      # Model downloader
+│   └── [setup.sh](scripts/setup.sh)               # Setup script
 ├── serve/                     # Model serving code
 │   ├── basic.py               # Basic Ray Serve deployment
 │   ├── openai_compatible.py   # OpenAI API (non-streaming)
 │   ├── openai_streaming.py    # OpenAI API (with streaming)
 │   └── graph_rag_api.py       # RAG-enhanced OpenAI API
-├── .env.example               # Example configuration file
-├── docker-compose.neo4j.yml   # Neo4j Docker configuration 
+├── [.env.example](.env.example)               # Example configuration file
+├── [docker-compose.neo4j.yml](docker-compose.neo4j.yml)   # Neo4j Docker configuration 
 ├── .gitignore                 # Git ignore file
-├── justfile                   # Command runner
-├── README.md                  # Project documentation
-└── requirements.txt           # Python dependencies
+├── [justfile](justfile)                   # Command runner
+├── [README.md](README.md)                  # Project documentation
+└── [requirements.txt](requirements.txt)           # Python dependencies
 ```
 
 ## Requirements
@@ -250,6 +252,11 @@ ray-llm-template/
 - Just command runner (`brew install just` on macOS)
 - git
 - wget or curl
+
+## Additional Documentation
+
+- [AGENTS.md](AGENTS.md) - Instructions for agents working on this repository
+- [CLAUDE.md](CLAUDE.md) - Guidance for Claude Code when working with this codebase
 
 ## Contributing
 
